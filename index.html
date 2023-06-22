@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Shopping Complex - Shop Management</title>
+  <script src="https://unpkg.com/react/umd/react.production.min.js"></script>
+  <script src="https://unpkg.com/react-dom/umd/react-dom.production.min.js"></script>
+  <script src="https://unpkg.com/babel-standalone/babel.min.js"></script>
+</head>
+
+<body>
+  <div id="root"></div>
+
+  <script type="text/babel">
+
+    class Shop {
+      constructor(name, rent) {
+        this.name = name;
+        this.rent = rent;
+      }
+    }
+
+    class ShoppingComplex extends React.Component {
+      constructor(props) {
+        super(props);
+        this.state = {
+          shops: []
+        };
+      }
+
+      addShop = () => {
+        const name = prompt("Enter the name of the shop:");
+        const rent = parseFloat(prompt("Enter the rent of the shop:"));
+
+        const shop = new Shop(name, rent);
+        this.setState(prevState => ({
+          shops: [...prevState.shops, shop]
+        }));
+      };
+
+      updateShop = (index) => {
+        const { shops } = this.state;
+        const name = prompt("Enter the updated name of the shop:");
+        const rent = parseFloat(prompt("Enter the updated rent of the shop:"));
+
+        shops[index].name = name;
+        shops[index].rent = rent;
+        this.setState({ shops: [...shops] });
+      };
+
+      deleteShop = (index) => {
+        const { shops } = this.state;
+        shops.splice(index, 1);
+        this.setState({ shops: [...shops] });
+      };
+
+      calculateTotalRent = () => {
+        const { shops } = this.state;
+        let totalRent = 0;
+        shops.forEach(shop => {
+          totalRent += shop.rent;
+        });
+        return totalRent;
+      };
+
+      render() {
+        const { shops } = this.state;
+
+        return (
+          <div>
+            <h2>Shopping Complex - Shop Management</h2>
+
+            <div>
+              <h3>Options:</h3>
+              <p>1. Add Shop</p>
+              <p>2. Update Shop</p>
+              <p>3. Delete Shop</p>
+              <p>4. Read Shops</p>
+              <p>Choose an option (1-4): <input type="text" id="menuChoice" /></p>
+              <button onClick={() => {
+                const choice = parseInt(document.getElementById("menuChoice").value);
+                switch (choice) {
+                  case 1:
+                    this.addShop();
+                    break;
+                  case 2:
+                    this.updateShop(parseInt(prompt("Enter the index of the shop to update:")));
+                    break;
+                  case 3:
+                    this.deleteShop(parseInt(prompt("Enter the index of the shop to delete:")));
+                    break;
+                  case 4:
+                    console.log("Shop List:");
+                    shops.forEach((shop, index) => {
+                      console.log(`Shop ${index + 1}: Name: ${shop.name}, Rent: ${shop.rent}`);
+                    });
+                    console.log(`Total Rent: ${this.calculateTotalRent()}`);
+                    break;
+                  default:
+                    console.log("Invalid choice!");
+                    break;
+                }
+              }}>
+                Submit
+              </button>
+            </div>
+
+            <h3>Shop List</h3>
+            <ul>
+              {shops.map((shop, index) => (
+                <li key={index}>
+                  Shop {index + 1}: Name: {shop.name}, Rent: {shop.rent} (Index: {index})
+                </li>
+              ))}
+            </ul>
+
+            <h3>Total Rent</h3>
+            <p>{this.calculateTotalRent()}</p>
+          </div>
+        );
+      }
+    }
+
+    ReactDOM.render(<ShoppingComplex />, document.getElementById("root"));
+
+  </script>
+</body>
+
+</html>
